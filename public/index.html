@@ -1,0 +1,19 @@
+<!doctype html><html>
+  <head>
+        <title>SpreadButtler Test Page</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+        <script type="text/javascript" src="jquery.SpreadButtler.js"></script>
+        <script type="text/javascript">
+$(document).ready(function(){
+   $('#mySpread').FillTable('./');
+});
+
+  </head>
+  <body>
+    <h1>SpreadButtler Test</h1>
+    <table id="mySpread">
+    <th><td>d.B1</td><td>d.C1</td></th>
+    <tr><td>sprintf('%.2f',d.['B'+r])</td><td>sprintf('%.2f',d.['B'+r])</td><td>sprintf('%.2f',d.['B'+r])</tr>
+    </table>    
+  </body>
+</html>
