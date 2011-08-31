@@ -1,96 +1,24 @@
 =head1 NAME
 
-GopfTool - Augmented User Experience Monitor
+SpreadButtler - A System providing access to a spreadsheet from within a webpage
 
 =head1 SYSTEM DESCRIPTION
 
-An area that has proven to be rather difficult to tackle in performance
-monitoring is desktop performance. At the same time, this is where the
-rubber hits the road, even when my performance monitor tells me that the
-desktop performance is fine, what matters at the end of the day is if the
-users feel comfortable with their desktop performance.
-
-So instead of throwing ever larger amounts of technology at the 'problem'
-GopfTool centers on the user experience. And provides the user with a very
-simple way of reporting problems.
-
-Operation is pretty simple, whenever the user is unhappy about some
-technical aspect of his IT environment, she launches the GopfTool and types
-her complaint into the comment box and presses send.
-
-This information is then uploaded to the GopfTool server which can also pass
-the information on via email for further processing.
-
-Obviously the system will only work when the reports are processed by
-other humans who respond and take care of improving the system performance.
-
-=head2 Features
-
-To help IT supporters figure the cause of the problem GopfTool can
-customized to fit the local requirements:
-
-The user can be provided with additional controls to supply more computer
-readable information with his message:
+SpreadButtler consists of two  components. 
 
 =over
 
 =item *
 
-A slider to express how big the problem is
+A Mojolicious server side application, able read an excel spread sheet and
+offering a rest interface to access its content.
 
 =item *
 
-Checkboxes to pick which application is affected by the problem.
-
-=item *
-
-Checkboxes to specify the type of problem
+A jQuery javascript plugin that requests data from from the server and
+inserts the data into a suitably prepared html table object.
 
 =back
-
-GopfTool can also acquire additional information from the users computer at
-the time where the problem report is being created.
-
-=over
-
-=item *
-
-fetch the last X lines of a log file
-
-=item *
-
-take a screenshot
-
-=item *
-
-report the cpu, network, memory performance
-
-=item *
-
-discover system configuration information
-
-=back
-
-The automatic data acquisition facility is plugin based and can be easily
-enhanced.
-
-=head2 Server
-
-The GopfTool server is responsible for providing the GopfTool clients with
-configuration information as well as for processing problem reports.
-
-As problem reports arrive, they are forwarded to an email address of your
-choice. At the same time the GopfTool server will collect statistical
-information on the problem reports. The more machine readable information is
-contained in the reports the more statistical evaluations are possible.
-
-The Statistics are presented in graphical web interface.
-
-=head2 What's in a name
-
-Gopf is a swiss german word utterred in frustration over something which
-does not work the way it is suposed to.
-
 
 =head1 AUTHOR
 
@@ -98,5 +26,5 @@ Tobi Oetiker E<lt>tobi@oetiker.chE<gt>
 
 =head1 HISTORY
 
- 2011-08-25 Initial Version
+ 2011-08-31 Initial Version
 
