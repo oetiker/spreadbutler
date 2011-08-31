@@ -7,12 +7,12 @@ use lib "$FindBin::Bin/../thirdparty/lib/perl5";
 use lib "$FindBin::Bin/../lib";
 
 use Mojolicious::Commands;
-use SpreadButtler;
+use SpreadButler;
 
-$ENV{MOJO_APP} = SpreadButtler->new();
+$ENV{MOJO_APP} = SpreadButler->new();
 
 my $cmds = Mojolicious::Commands->new;
 
-$cmds->namespaces(['SpreadButtler::Command']);
+$cmds->namespaces(['SpreadButler::Command']);
 
 $cmds->start;

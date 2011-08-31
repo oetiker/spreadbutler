@@ -1,4 +1,4 @@
-package SpreadButtler;
+package SpreadButler;
 use Mojo::Base 'Mojolicious';
 use Spreadsheet::Read;
 
@@ -9,7 +9,7 @@ sub startup {
     my $r = $self->routes;
     # Normal route to controller
     $r->any('/fetch' => sub {
-        my $ref = ReadData($ENV{SPREAD_BUTTLER_FILE},{cells => 0});
+        my $ref = ReadData($ENV{SPREAD_BUTLER_FILE},{cells => 0});
         $self->render(json => $ref[1]);       
     });
 }

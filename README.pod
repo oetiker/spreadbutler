@@ -1,10 +1,10 @@
 =head1 NAME
 
-SpreadButtler - A System providing access to a spreadsheet from within a webpage
+SpreadButler - A System providing access to a spreadsheet from within a webpage
 
 =head1 SYSTEM DESCRIPTION
 
-SpreadButtler consists of two  components. 
+SpreadButler consists of two  components. 
 
 =over
 
