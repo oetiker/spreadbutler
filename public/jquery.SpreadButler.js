@@ -21,11 +21,15 @@ License: GNU GPL Version 2 or later
         // let the user override the default
         // $.spreadButtler.defaultOptions.server = false
         defaultOptions: {
-           server : './', // where is the spread server located
+           server : './', // where is the spreadButtler server located
            file   : 'default.xlsx', // which file to read
-           sheet  : 1, // which sheet to use
+           sheet  : 1, // which sheet to use 1-x
            stopColumns : ['A'], // when all of these this column is empty, stop expanding rows
-           startRow: 2
+           startRow: 2, // for the auto rows
+           minColumn: null, // 'A'
+           maxColumn: null,
+           minRow: null,
+           maxRow: null
         }
     };
 
@@ -213,14 +217,12 @@ License: GNU GPL Version 2 or later
 
     function runScript(script,d,r){
         var ret;
-        console.log('Run: ' + script);
         try {
             ret = eval( script );
         }
         catch (error){
             ret =  'ERR: <i>'+ error + '</i>:' + script;
         }
-        console.log('.... ' + ret);
         return ''+ret;
     }
 
@@ -242,6 +244,7 @@ License: GNU GPL Version 2 or later
                 var $this=$(this);
                 var $headerFields = $('th',this);
                 if ($headerFields.length > 0){
+                    $this.addClass('headRow');
                     $headerFields.each(function(){
                         var $this = $(this);
                         $this.html(runScript($this.text(),data))
@@ -253,16 +256,14 @@ License: GNU GPL Version 2 or later
                     var stop = true;
                     for (var i=0; i < localOpts.stopColumns.length; i++){
                         if (data.hasOwnProperty(localOpts.stopColumns[i]+rowCounter)){
-                            console.log(localOpts.stopColumns[i]+rowCounter);
                             stop = false;
-                        } else {
-                            console.log("not found "+localOpts.stopColumns[i]+rowCounter);
                         }
                     }
                     if (stop || rowCounter > 400){
                         break;
                     }
                     var $row = $this.clone();
+                    $row.addClass(rowCounter % 2 == 1 ? 'oddRow' : 'evenRow');
                     $('td',$row).each(function(){
                         var d = data;
                         var r = rowCounter;
@@ -278,7 +279,14 @@ License: GNU GPL Version 2 or later
             });
         };
         $tables.hide();
-        $.getJSON(localOpts.server+'fetch',{ file: localOpts.file, sheet: localOpts.sheet },function(data){
+        $.getJSON(localOpts.server+'fetch',{ 
+            file: localOpts.file,
+            sheet: localOpts.sheet,
+            minColumn: localOpts.minColumn,
+            maxColumn: localOpts.maxColumn,
+            minRow: localOpts.minRow,
+            maxRow: localOpts.maxRow    
+        },function(data){
             $tables.each(function(){FillTable(data,this)});
             $tables.show();
         });
