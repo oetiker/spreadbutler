@@ -1,19 +1,24 @@
 <!doctype html><html>
   <head>
-        <title>SpreadButtler Test Page</title>
+        <title>SpreadButler Test Page</title>
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
-        <script type="text/javascript" src="jquery.SpreadButtler.js"></script>
+        <script type="text/javascript" src="jquery.SpreadButler.js"></script>
         <script type="text/javascript">
 $(document).ready(function(){
-   $('#mySpread').FillTable('./');
+   $('#mySpread').spreadButlerFillTable({
+        server : './',
+        file   : 'materialdatabase_160811mcg.xlsx',
+        stopColumns: ['B','C'],
+        startRow: 4
+   });
 });
-
+        </script>
   </head>
   <body>
     <h1>SpreadButtler Test</h1>
     <table id="mySpread">
-    <th><td>d.B1</td><td>d.C1</td></th>
-    <tr><td>sprintf('%.2f',d.['B'+r])</td><td>sprintf('%.2f',d.['B'+r])</td><td>sprintf('%.2f',d.['B'+r])</tr>
+    <tr><th>d.B2</th><th>d.C2</th><th>d.D2</th></tr>
+    <tr><td>d['B'+r]</td><td>sprintf('%.2f',d['C'+r])</td><td>sprintf('%.2f',d['D'+r])</td></tr>
     </table>    
   </body>
 </html>

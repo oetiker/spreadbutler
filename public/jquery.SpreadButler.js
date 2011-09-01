@@ -11,6 +11,24 @@ License: GNU GPL Version 2 or later
 * **********************************************************************/
 (function($) {
 
+
+    // setup a namespace for us
+    var nsp = 'spreadButler';
+
+
+    // Public Variables and Methods
+    $[nsp] = {
+        // let the user override the default
+        // $.spreadButtler.defaultOptions.server = false
+        defaultOptions: {
+           server : './', // where is the spread server located
+           file   : 'default.xlsx', // which file to read
+           sheet  : 1, // which sheet to use
+           stopColumns : ['A'], // when all of these this column is empty, stop expanding rows
+           startRow: 2
+        }
+    };
+
     function sprintf () {
         // http://kevin.vanzonneveld.net
         // +   original by: Ash Searle (http://hexmen.com/blog/)
@@ -193,73 +211,76 @@ License: GNU GPL Version 2 or later
         return format.replace(regex, doFormat);
     }
 
-    // setup a namespace for us
-    var nsp = 'spreadButtler';
-
-
-    // Public Variables and Methods
-    $[nsp] = {
-        // let the user override the default
-        // $.spreadButtler.defaultOptions.server = false
-        defaultOptions: {
-           server : './',
-           source : 'default'
+    function runScript(script,d,r){
+        var ret;
+        console.log('Run: ' + script);
+        try {
+            ret = eval( script );
         }
-    };
+        catch (error){
+            ret =  'ERR: <i>'+ error + '</i>:' + script;
+        }
+        console.log('.... ' + ret);
+        return ''+ret;
+    }
 
     $.fn[nsp+'FillTable'] = function(opts) {
         var localOpts = $.extend( 
             {}, // start with an empty map
             $[nsp].defaultOptions, // add defaults
             opts // add options
-        );
-        function FillTable(d){
+        );      
+        var $tables = $(this);  
+        function FillTable(data,node){
             // $this to access the jQuery object
-            var $this = $(this);
-
-            if ($this.nodeName != 'table'){
-                alert("Please apply "+nsp+'FillTable to a table node. This is a '+$this.nodeName);
+            if (node.nodeName != 'TABLE'){
+                alert("Please apply "+nsp+'FillTable to a table node. This is a '+node.nodeName+' node');
                 return;
             }        
-
-            // lets you override the options
-            // inside the dom objects class property
-            // requires the jQuery metadata plugin
-            // <div class="hello {color: 'red'}">ddd</div>
-            var meta_opts = localOpts;
-            if ($.meta){
-                meta_opts = $.extend({}, localOpts, $this.data());
-            }
-            // per dom node context data
-            if (! this[nsp]){
-                this[nsp] = {};
-            }
-            $this.children('th').children('td').each(function(){
+            var $node = $(node);
+            $('tbody > tr',node).each(function(){
                 var $this=$(this);
-                $this.html(eval($this.text()))
-            });
-            $this.children('tr').each(function(){
-                var $this=$(this);
-                var cont = true;
-                var r = 1;
-                while (cont){
-                    var $row = $this.clone();
-                    $row.children('td').each(function(){
-                        var $this=$(this);
-                        var text = eval($this.text());
-                        if (text == ''){
-                            cont = false;
+                var $headerFields = $('th',this);
+                if ($headerFields.length > 0){
+                    $headerFields.each(function(){
+                        var $this = $(this);
+                        $this.html(runScript($this.text(),data))
+                    });
+                    return;
+                }
+                var rowCounter = localOpts.startRow;
+                while (true){
+                    var stop = true;
+                    for (var i=0; i < localOpts.stopColumns.length; i++){
+                        if (data.hasOwnProperty(localOpts.stopColumns[i]+rowCounter)){
+                            console.log(localOpts.stopColumns[i]+rowCounter);
+                            stop = false;
+                        } else {
+                            console.log("not found "+localOpts.stopColumns[i]+rowCounter);
                         }
-                        $this.html(eval($this.text()));    
+                    }
+                    if (stop || rowCounter > 400){
+                        break;
+                    }
+                    var $row = $this.clone();
+                    $('td',$row).each(function(){
+                        var d = data;
+                        var r = rowCounter;
+                        var $this=$(this);
+                        var script = $this.text();
+                        $this.html(runScript(script,d,r));    
                     }); 
                     $this.after($row);
-                    r++;   
+                    cont = false;
+                    rowCounter++;   
                 }
                 $this.remove();
             });
         };
-        $.getJSON(meta_opts.server,{ source: meta_opts.source + 'fetch' },function(data){
-            this.each(FillTable(data));                                    
+        $tables.hide();
+        $.getJSON(localOpts.server+'fetch',{ file: localOpts.file, sheet: localOpts.sheet },function(data){
+            $tables.each(function(){FillTable(data,this)});
+            $tables.show();
         });
         return this;
         // run the action for each matching node        

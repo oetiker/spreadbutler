@@ -1,3 +1,3 @@
-package Wst21::Command::fastcgi;
+package SpreadButler::Command::fastcgi;
 use Mojo::Base 'Mojolicious::Command::fastcgi';
 1;

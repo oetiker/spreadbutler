@@ -5,6 +5,7 @@
 for module in \
     Mojolicious \
     Spreadsheet::Read \
+    Spreadsheet::XLSX \
 ; do
     perlmodule $module
 done
