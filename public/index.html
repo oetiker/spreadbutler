@@ -11,16 +11,18 @@ $(document).ready(function(){
         stopColumns: ['B','C'],
         startRow: 4,
         minColumn: 'B',
-        maxColumn: 'F'
+        maxColumn: 'F',
+        recalcClick: $('#recalcButton')
    });
 });
         </script>
   </head>
   <body>
-    <h1>SpreadButtler Test</h1>
+    <h1>SpreadButler Test</h1>
+    <div><input id="addField" type="text" value="1"></input><button id="recalcButton">Calc!</button></div>
     <table id="mySpread">
-    <tr><th>d.B2</th><th>d.C2</th><th>d.D2</th></tr>
-    <tr><td>d['B'+r]</td><td>sprintf('%.2f',d['C'+r])</td><td>sprintf('%.2f',d['D'+r])</td></tr>
+    <tr class="sbReplace"><th>d.B2</th><th>d.C2</th><th>d.D2</th></tr>
+    <tr class="sbRepeate"><td>d['B'+r]</td><td>sprintf('%.2f',d['C'+r])</td><td>sprintf('%.2f',d['D'+r])</td><td>sprintf('%.2f',parseFloat($('#addField').val())+parseFloat(d['D'+r]))</tr>
     </table>    
   </body>
 </html>

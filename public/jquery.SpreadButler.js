@@ -215,16 +215,82 @@ License: GNU GPL Version 2 or later
         return format.replace(regex, doFormat);
     }
 
-    function runScript(script,d,r){
+    function compileScript(script,data){
         var ret;
         try {
-            ret = eval( script );
+            if (script.match(RegExp('return'))){
+               eval( 'ret = function(d,r){ ' + script + ' };' );
+            }
+            else {
+               eval( 'ret = function(d,r){ return ' + script + ' };' );
+            }
+            ret(data,0);
         }
         catch (error){
-            ret =  'ERR: <i>'+ error + '</i>:' + script;
+            ret =  function(){ return 'ERR: <i>'+ error + '</i>:' + script } ;
         }
-        return ''+ret;
+        return ret;
     }
+
+    function FillTable(data,node,localOpts,cellUpdaters){
+        // $this to access the jQuery object
+        if (node.nodeName != 'TABLE'){
+            alert("Please apply "+nsp+'FillTable to a table node. This is a '+node.nodeName+' node');
+            return;
+        }        
+        var $node = $(node);
+        $('tr.sbReplace',node).each(function(){
+            $('td,th',this).each(function(){
+                var $this = $(this);
+                var cellScript = compileScript($this.text(),data)
+                $this.html(''+cellScript(data))
+            });            
+        });
+        
+        $('tr.sbRepeate',node).each(function(){            
+            var $this = $(this);
+            var cellScripts = [];
+            $('td,th',this).each(function(){
+                var $this=$(this);
+                var script = $this.text();
+                cellScripts.push(compileScript(script,data));
+            });
+            var rowCounter = localOpts.startRow;
+            while (true){
+                var stop = true;
+                for (var i=0; i < localOpts.stopColumns.length; i++){
+                    if (data.hasOwnProperty(localOpts.stopColumns[i]+rowCounter)){
+                        stop = false;
+                    }
+                }
+                if (stop || rowCounter > 400){
+                    break;
+                }
+                var $row = $this.clone();
+                $row.addClass(rowCounter % 2 == 1 ? 'sbOddRow' : 'sbEvenRow');
+                var colId=0;
+                $('td,th',$row).each(function(){
+                    var $this=$(this);
+                    var r = rowCounter;
+                    var i = colId;
+                    cellUpdaters.push(function(){                    
+                        $this.html(cellScripts[i](data,r));
+                    });
+                    colId++;
+                }); 
+                $this.after($row);
+                rowCounter++;
+            }
+            $this.remove();
+        });
+    };
+
+    function runAll(arr) {
+        for (var i = 0; i < arr.length; i++){
+            // run the all skip errors!
+            try { arr[i](); } catch (err) {};
+        }
+    };
 
     $.fn[nsp+'FillTable'] = function(opts) {
         var localOpts = $.extend( 
@@ -232,52 +298,8 @@ License: GNU GPL Version 2 or later
             $[nsp].defaultOptions, // add defaults
             opts // add options
         );      
+
         var $tables = $(this);  
-        function FillTable(data,node){
-            // $this to access the jQuery object
-            if (node.nodeName != 'TABLE'){
-                alert("Please apply "+nsp+'FillTable to a table node. This is a '+node.nodeName+' node');
-                return;
-            }        
-            var $node = $(node);
-            $('tbody > tr',node).each(function(){
-                var $this=$(this);
-                var $headerFields = $('th',this);
-                if ($headerFields.length > 0){
-                    $this.addClass('headRow');
-                    $headerFields.each(function(){
-                        var $this = $(this);
-                        $this.html(runScript($this.text(),data))
-                    });
-                    return;
-                }
-                var rowCounter = localOpts.startRow;
-                while (true){
-                    var stop = true;
-                    for (var i=0; i < localOpts.stopColumns.length; i++){
-                        if (data.hasOwnProperty(localOpts.stopColumns[i]+rowCounter)){
-                            stop = false;
-                        }
-                    }
-                    if (stop || rowCounter > 400){
-                        break;
-                    }
-                    var $row = $this.clone();
-                    $row.addClass(rowCounter % 2 == 1 ? 'oddRow' : 'evenRow');
-                    $('td',$row).each(function(){
-                        var d = data;
-                        var r = rowCounter;
-                        var $this=$(this);
-                        var script = $this.text();
-                        $this.html(runScript(script,d,r));    
-                    }); 
-                    $this.after($row);
-                    cont = false;
-                    rowCounter++;   
-                }
-                $this.remove();
-            });
-        };
         $tables.hide();
         $.getJSON(localOpts.server+'fetch',{ 
             file: localOpts.file,
@@ -287,8 +309,13 @@ License: GNU GPL Version 2 or later
             minRow: localOpts.minRow,
             maxRow: localOpts.maxRow    
         },function(data){
-            $tables.each(function(){FillTable(data,this)});
+            var cellUpdaters = [];
+            $tables.each(function(){FillTable(data,this,localOpts,cellUpdaters)});
             $tables.show();
+            runAll(cellUpdaters);
+            if (localOpts.recalcClick){
+                localOpts.recalcClick.click(function(){runAll(cellUpdaters)});                
+            }
         });
         return this;
         // run the action for each matching node        
