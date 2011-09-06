@@ -52,7 +52,7 @@ Setup a directory where you store the spreadsheets you want to make available vi
 
 =item *
 
-Integrate the SpreadButtler fastcgi script into your webpage using a script like this:
+Integrate the SpreadButler fastcgi script into your webpage using a script like this:
 
    DIR/sb.fcgi:
 
@@ -66,14 +66,14 @@ and make sure your webserver actually executes this as a fastcgi script.
 
 =head1 USAGE
 
-The client side integration of speadButtler relies on javascript. The
-necessary files are served directly by SpreadButtler. To use them in your
+The client side integration of speadButler relies on javascript. The
+necessary files are served directly by SpreadButler. To use them in your
 webpage, just load them in the header using:
 
    <script type="text/javascript" src="DIR/sb.fcgi/jquery.min.js"></script>
    <script type="text/javascript" src="DIR/sb.fcgi/jquery.SpreadButler.js"></script>
 
-To activate spreadButtler, call the spreadButtlerFillTable method on a table node:
+To activate spreadButler, call the spreadButlerFillTable method on a table node:
 
    <script type="text/javascript">
    $(document).ready(function(){
