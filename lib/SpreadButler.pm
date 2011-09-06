@@ -35,7 +35,7 @@ sub startup {
         }        
         my $sheet = int(clean_null $self->param('sheet')) || 1;
         $self->app->log->debug("file: $file, sheet: $sheet");
-        my $path = $ENV{SPREAD_BUTLER_ROOT}.'/'.$file;
+        my $path = $ENV{SPREAD_BUTLER_DATA}.'/'.$file;
         my $age = -M $path;
         if (not $cache{$path} or $cache{$path}{AGE} > $age){
             $cache{$path} = {

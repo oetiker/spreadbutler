@@ -4,7 +4,9 @@ SpreadButler - A System providing access to a spreadsheet from within a webpage
 
 =head1 SYSTEM DESCRIPTION
 
-SpreadButler consists of two  components. 
+SpreadButler is a system for live integration of spreadsheet data into
+webpages. It uses ajax technology and is therefore independent of the
+technology used to create the webpages themselfes.
 
 =over
 
@@ -19,6 +21,96 @@ A jQuery javascript plugin that requests data from from the server and
 inserts the data into a suitably prepared html table object.
 
 =back
+
+=head1 SETUP
+
+SpreadButler uses perl with the L<Mojolicious> and L<Spreadsheet::Read> packages.
+
+=over
+
+=item *
+
+Install perl (5.8 or better 5.12)
+
+=item *
+
+Unpack in a directory of your choice aka $INSTALL_DIR
+
+=item *
+
+Make sure the prerequisite packages L<Mojolicious> and L<Spreadsheet::Read> packages are installed. 
+The easiest way todo this, is to run
+
+  $ cd setup
+  $ ./build-perl-modules.sh
+
+This will create a F<thirdparty directory> and copy all the required bits there.
+
+=item *
+
+Setup a directory where you store the spreadsheets you want to make available via SpreadButler ($SPREAD_BUTLER_DATA)
+
+=item *
+
+Integrate the SpreadButtler fastcgi script into your webpage using a script like this:
+
+   DIR/sb.fcgi:
+
+   #!/bin/sh
+   export SPREAD_BUTLER_DATA=/some/DATA_DIR
+   exec /INSTALL_DIR/spread_butler.pl fastcgi
+
+and make sure your webserver actually executes this as a fastcgi script.
+
+=back
+
+=head1 USAGE
+
+The client side integration of speadButtler relies on javascript. The
+necessary files are served directly by SpreadButtler. To use them in your
+webpage, just load them in the header using:
+
+   <script type="text/javascript" src="DIR/sb.fcgi/jquery.min.js"></script>
+   <script type="text/javascript" src="DIR/sb.fcgi/jquery.SpreadButler.js"></script>
+
+To activate spreadButtler, call the spreadButtlerFillTable method on a table node:
+
+   <script type="text/javascript">
+   $(document).ready(function(){
+     $('#mySpread').spreadButlerFillTable({
+       server : 'DIR/sb.fcgi',
+       file   : 'sample.xlsx',
+       stopColumns: ['B','C'],
+       startRow: 4,
+       minColumn: 'B',
+       maxColumn: 'F',
+       minRow: '1',
+       maxRow: '50',
+       recalcClick: $('#recalcButton')
+     });
+   });
+   </script>
+
+This will fill data into the table with the F<mySpread> id. Provding
+interactive recalculation by connecting with the click event on the
+F<recalcButton>.
+
+  <div>
+    <input id="addField" type="text" value="1"></input>
+    <button id="recalcButton">Calc!</button>
+  </div>
+  <table id="mySpread">
+    <tr class="sbReplace">
+      <th>d.B2</th>
+      <th>d.C2</th>
+      <th>d.D2</th>
+    </tr>
+    <tr class="sbRepeate">
+      <td>d['B'+r]</td><td>sprintf('%.2f',d['C'+r])</td>
+      <td>sprintf('%.2f',d['D'+r])</td>
+      <td>sprintf('%.2f',parseFloat($('#addField').val())+parseFloat(d['D'+r]))</td>
+    </tr>
+  </table>    
 
 =head1 AUTHOR
 
