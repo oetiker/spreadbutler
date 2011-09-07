@@ -93,7 +93,15 @@ To activate spreadButler, call the spreadButlerFillTable method on a table node:
 
 This will fill data into the table with the F<mySpread> id. Provding
 interactive recalculation by connecting with the click event on the
-F<recalcButton>.
+F<recalcButton>. 
+
+Rows of class B<sbReplace> will get their B<td,th> cells
+replaces with the evaluated result of the embedded javascript expression.
+The map B<d> holds all the fields requested from the server.
+
+Rows of class B<sbRepeate> will get repeated for every row in the
+spreasheet, starting from B<startRow> to the rwo where all columns mentioned
+in F<stopColumns> are empty. The current row is available in the variable B<r>.
 
   <div>
     <input id="addField" type="text" value="1"></input>
