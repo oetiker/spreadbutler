@@ -120,6 +120,10 @@ in F<stopColumns> are empty. The current row is available in the variable B<r>.
     </tr>
   </table>    
 
+You can enter multi statement javascript into table cells, but then there
+must be a return statement in your script. For single statement script, the
+return gets added implicitly.
+
 =head1 AUTHOR
 
 Tobi Oetiker E<lt>tobi@oetiker.chE<gt>
