@@ -70,8 +70,8 @@ The client side integration of speadButler relies on javascript. The
 necessary files are served directly by SpreadButler. To use them in your
 webpage, just load them in the header using:
 
-   <script type="text/javascript" src="DIR/sb.fcgi/jquery.min.js"></script>
-   <script type="text/javascript" src="DIR/sb.fcgi/jquery.SpreadButler.js"></script>
+   <script type="text/javascript" src="DIR/sb.fcgi/js/jquery.js"></script>
+   <script type="text/javascript" src="DIR/sb.fcgi/js/jquery.SpreadButler.js"></script>
 
 To activate spreadButler, call the spreadButlerFillTable method on a table node:
 

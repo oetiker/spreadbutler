@@ -40,7 +40,7 @@ sub startup {
         if (not $cache{$path} or $cache{$path}{AGE} > $age){
             $cache{$path} = {
                 AGE => $age,
-                DATA => ReadData($ENV{SPREAD_BUTLER_ROOT}.'/'.$file,cells => 1,rc=>0,attr=>0)
+                DATA => ReadData($ENV{SPREAD_BUTLER_DATA}.'/'.$file,cells => 1,rc=>0,attr=>0)
             };
         }        
         my $ref = $cache{$path}{DATA};    
