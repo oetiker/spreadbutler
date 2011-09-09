@@ -1,6 +1,9 @@
 package SpreadButler;
 use Mojo::Base 'Mojolicious';
 use Spreadsheet::Read;
+use Encode;
+our $toUTF8 = find_encoding('utf8');
+
 
 # This method will run once at server start
 our %cache;
@@ -57,7 +60,7 @@ sub startup {
             next if $maxRow and $row > $maxRow;
             next if $minColumn and $col < $minColumn;
             next if $maxColumn and $col > $maxColumn;
-            $data->{$id} = $ref->[$sheet]{$id};
+            $data->{$id} = $toUTF8->decode($ref->[$sheet]{$id});
         };
         $self->render(json => $data);
     });
