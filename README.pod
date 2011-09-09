@@ -99,7 +99,7 @@ Rows of class B<sbReplace> will get their B<td,th> cells
 replaces with the evaluated result of the embedded javascript expression.
 The map B<d> holds all the fields requested from the server.
 
-Rows of class B<sbRepeate> will get repeated for every row in the
+Rows of class B<sbRepeat> will get repeated for every row in the
 spreasheet, starting from B<startRow> to the rwo where all columns mentioned
 in F<stopColumns> are empty. The current row is available in the variable B<r>.
 
@@ -113,7 +113,7 @@ in F<stopColumns> are empty. The current row is available in the variable B<r>.
       <th>d.C2</th>
       <th>d.D2</th>
     </tr>
-    <tr class="sbRepeate">
+    <tr class="sbRepeat">
       <td>d['B'+r]</td><td>sprintf('%.2f',d['C'+r])</td>
       <td>sprintf('%.2f',d['D'+r])</td>
       <td>sprintf('%.2f',parseFloat($('#addField').val())+parseFloat(d['D'+r]))</td>

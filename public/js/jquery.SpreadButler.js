@@ -248,7 +248,7 @@ License: GNU GPL Version 2 or later
             });            
         });
         
-        $('tr.sbRepeate',node).each(function(){            
+        $('tr.sbRepeat',node).each(function(){            
             var $this = $(this);
             var cellScripts = [];
             $('td,th',this).each(function(){
