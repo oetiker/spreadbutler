@@ -242,8 +242,9 @@ License: GNU GPL Version 2 or later
         $('tr.sbReplace',node).each(function(){
             $('td,th',this).each(function(){
                 var $this = $(this);
-                var cellScript = compileScript($this.text(),data)
-                $this.html(''+cellScript(data))
+                var cellScript = compileScript($this.text(),data)                
+                var value = cellScript(data);
+                $this.html(value != null ? value : '')
             });            
         });
         
@@ -273,12 +274,13 @@ License: GNU GPL Version 2 or later
                     var $this=$(this);
                     var r = rowCounter;
                     var i = colId;
-                    cellUpdaters.push(function(){                    
-                        $this.html(cellScripts[i](data,r));
+                    cellUpdaters.push(function(){ 
+                        var value = cellScripts[i](data,r);                   
+                        $this.html(value != null ? value : '');
                     });
                     colId++;
                 }); 
-                $this.after($row);
+                $this.before($row);
                 rowCounter++;
             }
             $this.remove();
