@@ -1,10 +1,20 @@
 #!/usr/bin/env perl
 
+BEGIN {
+    if ($ENV{'PAR_TEMP'}) {
+        use FindBin;
+        my $dir = File::Spec->catfile ($ENV{'PAR_TEMP'}, 'inc');
+        chdir $dir or die "chdir: '$dir': $!";
+    }
+    else {
+        use FindBin;
+        use lib "$FindBin::Bin/../thirdparty/lib/perl5";
+        use lib "$FindBin::Bin/../lib";
+    }
+}
+
 use strict;
 use warnings;
-use FindBin;
-use lib "$FindBin::Bin/../thirdparty/lib/perl5";
-use lib "$FindBin::Bin/../lib";
 
 use Mojolicious::Commands;
 use SpreadButler;

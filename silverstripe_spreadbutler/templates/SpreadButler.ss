@@ -12,6 +12,7 @@ jQuery(document).ready(function() {
        $minColumn
        $maxColumn
        $recalcClick
+       $sortCol
      });
    });
 });

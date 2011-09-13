@@ -29,7 +29,8 @@ License: GNU GPL Version 2 or later
            minColumn: null, // 'A'
            maxColumn: null,
            minRow: null,
-           maxRow: null
+           maxRow: null,
+           sortCol: null,
         }
     };
 
@@ -247,7 +248,6 @@ License: GNU GPL Version 2 or later
                 $this.html(value != null ? value : '')
             });            
         });
-        
         $('tr.sbRepeat',node).each(function(){            
             var $this = $(this);
             var cellScripts = [];
@@ -257,6 +257,7 @@ License: GNU GPL Version 2 or later
                 cellScripts.push(compileScript(script,data));
             });
             var rowCounter = localOpts.startRow;
+            var rowArr = [];
             while (true){
                 var stop = true;
                 for (var i=0; i < localOpts.stopColumns.length; i++){
@@ -268,6 +269,7 @@ License: GNU GPL Version 2 or later
                     break;
                 }
                 var $row = $this.clone();
+                rowArr.push($row);
                 $row.addClass(rowCounter % 2 == 1 ? 'sbOddRow' : 'sbEvenRow');
                 var colId=0;
                 $('td,th',$row).each(function(){
@@ -283,7 +285,23 @@ License: GNU GPL Version 2 or later
                 $this.before($row);
                 rowCounter++;
             }
-            $this.remove();
+            $this.hide();
+            if (localOpts.sortCol != null){
+                 var rowSorter = function(a,b){                    
+                    var t1 = $('td:eq('+localOpts.sortCol+')',a).text();
+                    var t2 = $('td:eq('+localOpts.sortCol+')',b).text();
+                    return t1 == t2 ? 0 : t1 > t2 ? 1 : -1;
+                };
+                cellUpdaters.push(function(){
+                    console.log('sorting');
+                    
+                    rowArr.sort(rowSorter);
+                    for (var i=0;i<rowArr.length;i++){
+                        $this.before(rowArr[i]);
+                    };
+                });
+            }
+            
         });
     };
 
