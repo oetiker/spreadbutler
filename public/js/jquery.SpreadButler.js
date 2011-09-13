@@ -270,7 +270,6 @@ License: GNU GPL Version 2 or later
                 }
                 var $row = $this.clone();
                 rowArr.push($row);
-                $row.addClass(rowCounter % 2 == 1 ? 'sbOddRow' : 'sbEvenRow');
                 var colId=0;
                 $('td,th',$row).each(function(){
                     var $this=$(this);
@@ -286,22 +285,22 @@ License: GNU GPL Version 2 or later
                 rowCounter++;
             }
             $this.hide();
-            if (localOpts.sortCol != null){
-                 var rowSorter = function(a,b){                    
-                    var t1 = $('td:eq('+localOpts.sortCol+')',a).text();
-                    var t2 = $('td:eq('+localOpts.sortCol+')',b).text();
-                    return t1 == t2 ? 0 : t1 > t2 ? 1 : -1;
-                };
-                cellUpdaters.push(function(){
-                    console.log('sorting');
-                    
-                    rowArr.sort(rowSorter);
-                    for (var i=0;i<rowArr.length;i++){
-                        $this.before(rowArr[i]);
-                    };
-                });
-            }
-            
+            var rowSorter = function(a,b){          
+                var sc = parseInt(localOpts.sortCol) - 1;
+                var t1 = $('td:eq('+sc+')',a).text();
+                var t2 = $('td:eq('+sc+')',b).text();
+                return t1 == t2 ? 0 : t1 > t2 ? 1 : -1;
+            };
+            cellUpdaters.push(function(){
+               if (localOpts.sortCol != null){
+                   rowArr.sort(rowSorter);
+               }
+               for (var i=0;i<rowArr.length;i++){
+                   rowArr[i].addClass(i % 2 == 1 ? 'sbOddRow' : 'sbEvenRow');
+                   rowArr[i].removeClass(i % 2 == 1 ? 'sbEvenRow' : 'sbOddRow');
+                   $this.before(rowArr[i]);
+               };
+            });         
         });
     };
 
