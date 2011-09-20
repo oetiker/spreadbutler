@@ -31,6 +31,7 @@ License: GNU GPL Version 2 or later
            minRow: null,
            maxRow: null,
            sortCol: null,
+           finalizeCallback: null, // function(recalcCall){...}
         }
     };
 
@@ -334,6 +335,9 @@ License: GNU GPL Version 2 or later
             runAll(cellUpdaters);
             if (localOpts.recalcClick){
                 localOpts.recalcClick.click(function(){runAll(cellUpdaters)});                
+            }
+            if (localOpts.finalizeCallback){
+                localOpts.finalizeCallback(function(){runAll(cellUpdaters)});
             }
         });
         return this;
