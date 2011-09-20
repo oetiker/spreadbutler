@@ -13,7 +13,13 @@ $(document).ready(function(){
         minColumn: 'B',
         maxColumn: 'F',
         recalcClick: $('#recalcButton'),
-        sortCol: 0
+        sortCol: 0,
+        finalizeCallback: function(action){
+            $('#addField').change(function(){
+                // check input
+                action();
+            });
+        }
    });
 });
         </script>

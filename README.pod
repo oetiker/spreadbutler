@@ -87,6 +87,12 @@ To activate spreadButler, call the spreadButlerFillTable method on a table node:
        minRow: '1',
        maxRow: '50',
        recalcClick: $('#recalcButton'),
+       finalizeCallback: function(action){
+            $('#addField').change(function(){    
+                // check input
+                action(); 
+            });
+        }
        sortCol: 1
      });
    });
