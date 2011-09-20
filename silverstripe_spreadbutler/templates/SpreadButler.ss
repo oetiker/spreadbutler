@@ -3,8 +3,7 @@
 <script type="text/javascript" src="{$BaseHref}sb.fcgi/js/jquery.SpreadButler.js"></script>
 <script type="text/javascript">
 jQuery(document).ready(function() {
-   $(document).ready(function(){
-     $('#$tableId').spreadButlerFillTable({
+   jQuery('#$tableId').spreadButlerFillTable({
        server : '{$BaseHref}sb.fcgi/',
        file   : '$fileName'
        $stopColumns
@@ -13,7 +12,7 @@ jQuery(document).ready(function() {
        $maxColumn
        $recalcClick
        $sortCol
-     });
+       $finalizeCallback
    });
 });
 </script>
