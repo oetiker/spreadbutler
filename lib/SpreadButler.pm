@@ -2,6 +2,7 @@ package SpreadButler;
 use Mojo::Base 'Mojolicious';
 use Spreadsheet::Read;
 use Encode;
+
 our $toUTF8 = find_encoding('utf8');
 
 
@@ -43,24 +44,31 @@ sub startup {
         if (not $cache{$path} or $cache{$path}{AGE} > $age){
             $cache{$path} = {
                 AGE => $age,
-                DATA => ReadData($ENV{SPREAD_BUTLER_DATA}.'/'.$file,cells => 1,rc=>0,attr=>0)
+                DATA => ReadData($ENV{SPREAD_BUTLER_DATA}.'/'.$file,cells=>0,rc=>1,attr=>0,strip=>3)
             };
-        }        
+        }
         my $ref = $cache{$path}{DATA};    
         my $data = {};
         my $minRow =  clean_null $self->param('minRow');                
         my $maxRow =  clean_null $self->param('maxRow');
         my $minColumn = col2num clean_null $self->param('minColumn');
         my $maxColumn = col2num clean_null $self->param('maxColumn');
-        for my $id (keys %{$ref->[$sheet]}){
-            $id =~ /^([A-Z]+)(\d+)$/ or next;
-            my $col = col2num $1;
-            my $row = $2;
-            next if $minRow and $row < $minRow;
-            next if $maxRow and $row > $maxRow;
-            next if $minColumn and $col < $minColumn;
-            next if $maxColumn and $col > $maxColumn;
-            $data->{$id} = $toUTF8->decode($ref->[$sheet]{$id});
+        my $cellArray = $ref->[$sheet]{cell};
+        #die Dumper $cellArray;
+        my $colId = 'A';
+        for (my $colNum = 1;$colNum < @$cellArray;$colNum++){
+            my $colData = $cellArray->[$colNum];
+            for ( my $rowId = 1; $rowId < @$colData; $rowId++ ){
+                my $el = $colData->[$rowId];
+                if ( defined $el 
+                     and ( not defined $minRow or $rowId >= $minRow )
+                     and ( not defined $maxRow or $rowId <= $maxRow )
+                     and ( not defined $minColumn or $colNum >= $minColumn)
+                     and ( not defined $maxColumn or $colNum <= $maxColumn) ){
+                    $data->{"$colId$rowId"} = $toUTF8->decode($el);
+                }
+            }
+            $colId++;
         };
         $self->render(json => $data);
     });
