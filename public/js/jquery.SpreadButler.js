@@ -2,7 +2,7 @@
 Title: jQuery SpreadButtler
 Copyright: Tobi Oetiker <tobi@oetiker.ch>, OETIKER+PARTNER AG
 
-Contans sprintf from  http://kevin.vanzonneveld.net
+Contains sprintf from  http://kevin.vanzonneveld.net
 
 See the comments in the code.
 
@@ -10,7 +10,6 @@ License: GNU GPL Version 2 or later
 
 * **********************************************************************/
 (function($) {
-
 
     // setup a namespace for us
     var nsp = 'spreadButler';
@@ -32,6 +31,8 @@ License: GNU GPL Version 2 or later
            maxRow: null,
            sortCol: null,
            finalizeCallback: null, // function(recalcCall){...}
+           recalcClick: null, // function(recalcCall){...}
+           dataLoadCallback: null // function($tables,data){...}
         }
     };
 
@@ -237,7 +238,7 @@ License: GNU GPL Version 2 or later
     function FillTable(data,node,localOpts,cellUpdaters){
         // $this to access the jQuery object
         if (node.nodeName != 'TABLE'){
-            alert("Please apply "+nsp+'FillTable to a table node. This is a '+node.nodeName+' node');
+            // alert("Please apply "+nsp+'FillTable to a table node. This is a '+node.nodeName+' node');
             return;
         }        
         var $node = $(node);
@@ -330,15 +331,18 @@ License: GNU GPL Version 2 or later
             maxRow: localOpts.maxRow    
         },function(data){
             var cellUpdaters = [];
+            if (localOpts.dataLoadCallback){
+                localOpts.dataLoadCallback($tables,data);
+            }            
             $tables.each(function(){FillTable(data,this,localOpts,cellUpdaters)});
             $tables.show();
             runAll(cellUpdaters);
             if (localOpts.recalcClick){
-                localOpts.recalcClick.click(function(){runAll(cellUpdaters)});                
+                localOpts.recalcClick.click(function(){runAll(cellUpdaters)});
             }
             if (localOpts.finalizeCallback){
                 localOpts.finalizeCallback(function(){runAll(cellUpdaters)});
-            }
+            }            
         });
         return this;
         // run the action for each matching node        
