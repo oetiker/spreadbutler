@@ -26,7 +26,7 @@ sub clean_null ($) {
 
 sub startup {
     my $self = shift;
-    $self->secret('no secret since we use no cookies');
+    $self->secrets(['no secret since we use no cookies']);
     # Routes
     my $r = $self->routes;
     # Normal route to controller

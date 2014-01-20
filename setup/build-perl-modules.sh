@@ -4,6 +4,7 @@
 
 for module in \
     Mojolicious \
+    Mojo::Server::FastCGI \
     Spreadsheet::Read \
     Spreadsheet::XLSX \
 ; do
