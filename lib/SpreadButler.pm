@@ -20,7 +20,7 @@ sub col2num ($) {
 }
 
 sub clean_null ($) {
-    return undef if $_[0] and $_[0] eq 'null';
+    return undef if ($_[0] and $_[0] eq 'null') or ($_[0] eq '');
     return $_[0];
 }
 
@@ -65,7 +65,7 @@ sub startup {
                      and ( not defined $maxRow or $rowId <= $maxRow )
                      and ( not defined $minColumn or $colNum >= $minColumn)
                      and ( not defined $maxColumn or $colNum <= $maxColumn) ){
-                    $data->{"$colId$rowId"} = $toUTF8->decode($el);
+                    $data->{"$colId$rowId"} = $el; # $toUTF8->decode($el);
                 }
             }
             $colId++;
