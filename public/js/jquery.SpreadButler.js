@@ -246,8 +246,10 @@ License: GNU GPL Version 2 or later
             $('td,th',this).each(function(){
                 var $this = $(this);
                 var cellScript = compileScript($this.text(),data)                
-                var value = cellScript(data);
-                $this.html(value != null ? value : '')
+                cellUpdaters.push(function(){ 
+                    var value = cellScript(data);      
+                    $this.html(value != null ? value : '');
+                });
             });            
         });
         $('tr.sbRepeat',node).each(function(){            
