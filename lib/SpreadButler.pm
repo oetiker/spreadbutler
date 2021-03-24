@@ -3,9 +3,6 @@ use Mojo::Base 'Mojolicious';
 use Spreadsheet::Read;
 use Encode;
 
-our $toUTF8 = find_encoding('utf8');
-
-
 # This method will run once at server start
 our %cache;
 
@@ -65,7 +62,7 @@ sub startup {
                      and ( not defined $maxRow or $rowId <= $maxRow )
                      and ( not defined $minColumn or $colNum >= $minColumn)
                      and ( not defined $maxColumn or $colNum <= $maxColumn) ){
-                    $data->{"$colId$rowId"} = $el; # $toUTF8->decode($el);
+                    $data->{"$colId$rowId"} = $el;
                 }
             }
             $colId++;

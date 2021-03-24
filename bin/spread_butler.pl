@@ -1,29 +1,17 @@
 #!/usr/bin/env perl
 
-BEGIN {
-    if ($ENV{'PAR_TEMP'}) {
-        use FindBin;
-        my $dir = File::Spec->catfile ($ENV{'PAR_TEMP'}, 'inc');
-        chdir $dir or die "chdir: '$dir': $!";
-    }
-    else {
-        use FindBin;
-        use lib "$FindBin::Bin/../thirdparty/lib/perl5";
-        use lib "$FindBin::Bin/../lib";
-    }
-}
+use lib qw(); # PERL5LIB
+use FindBin;use lib "$FindBin::RealBin/../lib";use lib "$FindBin::RealBin/../thirdparty/lib/perl5"; # LIBDIR
 
-use strict;
-use warnings;
-
+# having a non-C locale for number will wreck all sorts of havoc
+# when things get converted to string and back
+use POSIX qw(locale_h);
+setlocale(LC_NUMERIC, "C");use strict;
 use Mojolicious::Commands;
 
 die "Please set SPREAD_BUTLER_DATA to the directory where your spreadsheets are stored\n"
     unless $ENV{SPREAD_BUTLER_DATA} and -d $ENV{SPREAD_BUTLER_DATA};
 
-my $cmds = Mojolicious::Commands->new;
+Mojolicious::Commands->start_app('SpreadButler');
 
-
-$cmds->namespaces(['SpreadButler::Command']);
-
-$cmds->start_app('SpreadButler');
+__END__
